@@ -1,0 +1,39 @@
+language: java
+jdk:
+  - oraclejdk8
+
+sudo: false
+install: true
+
+script:
+  - ./gradlew war
+  - ./gradlew test
+
+notifications:
+  email:
+    recipients:
+      - sharma.j@husky.neu.edu
+
+after_success:
+  - mkdir codedeploy
+  - zip -r SimpleJavaProject-${TRAVIS_JOB_NUMBER}.zip build/libs/Root.war appspec.yml
+  - ls -al
+  - mv SimpleJavaProject-${TRAVIS_JOB_NUMBER}.zip codedeploy/
+  - ls -al
+  - pwd
+  - cd codedeploy
+  - ls -al
+  - pwd
+
+before_deploy:
+  - cd ..
+
+deploy:
+  - provider: s3
+    access_key_id: AKIAIUZLVF7ZPZTBUC5Q
+    secret_access_key:
+      secure: "Rjme1wSx9zYDU4N6ku+K3bHMwgJEksdeIBWkvgncdFFq8jPhdIY1dnyZBI20RSu62STM/lNSV4rgH8ExigNQo4xlf4MOO+I4Sxty9hvX2VcrpSfyvgf0J841rASQx9J8uduNb1iUDNQBHL5pSC9X10whsQbvgoBNbfZKjLcAyFLauOmiOCMWAeXYua92ckQ6NIG15SWjKJG7N8xon6S4G5VVr7NKDBo1lZndXz5JLAO4kSw0TUV/pjNdm5KX1HvCzhsgnUs+z9RNA41CY4nHksAuzibxIifpUFu8LPbANroksUaRqAzai+HbxrRHcrETt5DOb2x77I1/Tw3M1mNwvMLumRDmBFrC77/RdhsafRIXaUjFVYcDAvp1SpcRtS8GWzpyFrKO5HbiIAAVPJZlwKPTl0jOksYEeygn6dJZiuHivHqPiuien3Ox2PPOOKODRNWG6i7dyRsCkWiNCxYHQTZk8OsibtzWMwMDbt3D26/FxkFOsfu0BzULf1uNQ/IQvGsrUVBZca2SikUNwOyb0O750N+313+ZJ2Hr7GOhVK6NJ90/Rxda1e6ATEVHhnV4mKPNba7LbrO5OkTnw/+OuOBlEN+VGFB+sfgyfklGs3Nu2JFX2aMIhPqNW2mpiYpBptrwywreZmzySxHaPso5gafZduqrHFdAPg3zkZrb91k="
+    local_dir: codedeploy
+    bucket: code-deploy.csye6225-fall2017-patilsur.me
+    region: us-east-1
+    skip_cleanup: true
