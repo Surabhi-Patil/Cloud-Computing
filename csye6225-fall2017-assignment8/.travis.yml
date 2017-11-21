@@ -29,8 +29,8 @@ before_deploy:
 
 deploy:
   - provider: s3
-    access_key_id: AKIAJP4QMW3IDX7QEN2A
-    secret_access_key: "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"
+    access_key_id: xyz
+    secret_access_key: "abc"
     local_dir: codedeploy
     bucket: csye6225-surabhi
     region: us-east-1
@@ -38,14 +38,14 @@ deploy:
 
 
   - provider: codedeploy
-    access_key_id: AKIAJP4QMW3IDX7QEN2A
+    access_key_id: xyz
     bucket: csye6225-surabhi
     key: csye6225-spring-boot-starter-webapp-master.zip
     bundle_type: zip
     application: SimpleJavaProject
     deployment_group: SimpleJavaProject
     region: us-east-1
-    secret_access_key: "E7dFLvSYl0tsbuhIjqwvGM08fKIhjxqRxgX+yVDb"
+    secret_access_key: "abc"
     wait-until-deployed: true
 
 
