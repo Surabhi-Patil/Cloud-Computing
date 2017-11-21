@@ -1,0 +1,59 @@
+language: java
+jdk:
+- oraclejdk8
+sudo: false
+install: true
+script:
+- "./gradlew build"
+
+
+
+
+after_success:
+  - pwd
+  - mkdir codedeploy
+  - zip -r csye6225-spring-boot-starter-webapp-master.zip build/libs/ROOT.war appspec.yml ./restartTomcat.sh
+  - ls -al
+  - mv csye6225-spring-boot-starter-webapp-master.zip codedeploy/
+  - ls -al
+  - pwd
+  - cd codedeploy
+  - ls -al
+  - pwd
+
+before_deploy:
+  - cd ..
+  - pwd
+  
+  
+
+deploy:
+  - provider: s3
+    access_key_id: AKIAJP4QMW3IDX7QEN2A
+    secret_access_key: "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"
+    local_dir: codedeploy
+    bucket: csye6225-surabhi
+    region: us-east-1
+    skip_cleanup: true
+
+
+  - provider: codedeploy
+    access_key_id: AKIAJP4QMW3IDX7QEN2A
+    bucket: csye6225-surabhi
+    key: csye6225-spring-boot-starter-webapp-master.zip
+    bundle_type: zip
+    application: SimpleJavaProject
+    deployment_group: SimpleJavaProject
+    region: us-east-1
+    secret_access_key: "E7dFLvSYl0tsbuhIjqwvGM08fKIhjxqRxgX+yVDb"
+    wait-until-deployed: true
+
+
+
+notifications:
+  email:
+    recipients:
+    - patil.sur@husky.neu.edu
+    - murali.a@husky.neu.edu
+    - sharma.j@husky.neu.edu
+    on_success: always
